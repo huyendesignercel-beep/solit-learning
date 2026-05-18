@@ -1189,15 +1189,15 @@ function appendChoiceCards(platform) {
     <button class="qa-card" onclick="chooseClassMaterials()">
       <span class="qa-icon">📚</span>
       <div>
-        <div class="qa-title">Use class materials</div>
-        <div class="qa-sub">Open the ${platform} workspace your teacher prepared</div>
+        <div class="qa-title">Use teacher's notebook</div>
+        <div class="qa-sub">Open the ${platform} workspace your teacher prepared — shared account included</div>
       </div>
     </button>
-    <button class="qa-card" onclick="chooseUploadFile()">
-      <span class="qa-icon">📤</span>
+    <button class="qa-card" onclick="chooseOwnAccount()">
+      <span class="qa-icon">👤</span>
       <div>
-        <div class="qa-title">Upload my own file</div>
-        <div class="qa-sub">Attach a document, image or PDF and I'll help you study it</div>
+        <div class="qa-title">Use my own account</div>
+        <div class="qa-sub">Sign in with your own Google account and upload your own files to ${platform}</div>
       </div>
     </button>
     <button class="qa-card" onclick="chooseJustChat()">
@@ -1228,6 +1228,37 @@ function chooseClassMaterials() {
     return;
   }
   openSigninModal(platform, url);
+}
+
+function chooseOwnAccount() {
+  removeChoiceCards();
+  const platform = PLATFORM_LABELS[state.subject] || 'NotebookLM';
+  const baseUrl  = platform === 'MagicSchool' ? 'https://app.magicschool.ai' : 'https://notebooklm.google.com';
+
+  const wrap = document.getElementById('chat-messages');
+  const card = document.createElement('div');
+  card.className = 'msg msg-ai signin-card-wrap';
+  card.innerHTML = `
+    <div class="signin-card">
+      <div class="sc-title">Sign in with your own account</div>
+      <div class="sc-sub">Open ${platform} and sign in with your own Google account, then upload your files to study.</div>
+      <div class="signin-steps">
+        <div class="ss-step"><span>1</span> Tap "Open ${platform}" below — a new tab will open</div>
+        <div class="ss-step"><span>2</span> Sign in with your own Google account</div>
+        <div class="ss-step"><span>3</span> Create a new notebook and upload your files</div>
+        <div class="ss-step"><span>4</span> Switch back here when you're done studying!</div>
+      </div>
+      <a class="btn btn-primary sc-open-btn" href="${baseUrl}" target="_blank" rel="noopener">Open ${platform} in new tab →</a>
+    </div>`;
+
+  card.querySelector('.sc-open-btn').addEventListener('click', () => {
+    setTimeout(() => {
+      appendMessage('ai', `✅ **${platform}** opened! Sign in with your own Google account, upload your files, and come back here when you're ready.`);
+    }, 400);
+  });
+
+  wrap.appendChild(card);
+  wrap.scrollTop = wrap.scrollHeight;
 }
 
 /* ── Sign-in card (injected into chat) ── */
