@@ -1227,7 +1227,30 @@ function chooseClassMaterials() {
     appendMessage('ai', `⚠️ The **${platform}** link for this subject isn't ready yet — your teacher will add it soon!\n\nIn the meantime, feel free to ask me questions below 💬`);
     return;
   }
-  openSigninModal(platform, url);
+
+  const wrap = document.getElementById('chat-messages');
+  const card = document.createElement('div');
+  card.className = 'msg msg-ai signin-card-wrap';
+  card.innerHTML = `
+    <div class="signin-card">
+      <div class="sc-title">📚 Teacher's ${platform} Notebook</div>
+      <div class="sc-sub">Your teacher has shared a notebook for this subject. Open it in a new tab to start studying!</div>
+      <div class="signin-steps">
+        <div class="ss-step"><span>1</span> Tap "Open" to open the notebook in a new tab</div>
+        <div class="ss-step"><span>2</span> Study your materials there</div>
+        <div class="ss-step"><span>3</span> Switch back here anytime to ask questions!</div>
+      </div>
+      <a class="btn btn-primary sc-open-btn" href="${url}" target="_blank" rel="noopener">Open ${platform} in new tab →</a>
+    </div>`;
+
+  card.querySelector('.sc-open-btn').addEventListener('click', () => {
+    setTimeout(() => {
+      appendMessage('ai', `✅ **${platform}** opened in a new tab! Come back here anytime to ask questions.`);
+    }, 400);
+  });
+
+  wrap.appendChild(card);
+  wrap.scrollTop = wrap.scrollHeight;
 }
 
 function chooseOwnAccount() {
