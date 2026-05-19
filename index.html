@@ -887,8 +887,7 @@ function startSession() {
   // Pre-fill feedback
   document.getElementById('fb-topics').value = state.subtopics.join(', ');
 
-  // Set platform button label
-  document.getElementById('platform-label').textContent = PLATFORM_LABELS[state.subject] || 'NotebookLM';
+  // platform button removed
 
   // Clear previous chat
   chatHistory = [];
