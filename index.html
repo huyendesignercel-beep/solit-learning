@@ -249,13 +249,13 @@
     .stb-detail  { font-size: 11px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .stb-timer   { font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; flex-shrink: 0; }
     .stb-timer.timer-warn { color: #FFD700; }
-    .platform-btn {
+    .back-btn {
       background: rgba(255,255,255,.2); border: none; color: #fff;
-      border-radius: 20px; padding: 4px 10px; font-size: 11px;
-      font-weight: 600; cursor: pointer; white-space: nowrap;
-      font-family: inherit; transition: background .2s;
+      border-radius: 50%; width: 34px; height: 34px; font-size: 18px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-family: inherit; transition: background .2s; flex-shrink: 0;
     }
-    .platform-btn:hover { background: rgba(255,255,255,.35); }
+    .back-btn:hover { background: rgba(255,255,255,.35); }
 
     /* chat messages */
     .chat-messages {
@@ -569,32 +569,23 @@
     <!-- ── SCREEN: Session / Chat ── -->
     <div class="screen" id="screen-session">
 
-      <!-- Top bar: subject + timer + platform link -->
+      <!-- Top bar: back + subject + timer -->
       <div class="session-topbar">
-        <div class="stb-left">
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+          <button class="back-btn" onclick="goBackFromSession()" title="Go back">←</button>
+        </div>
+        <div class="stb-left" style="flex:1;min-width:0">
           <div class="stb-subject" id="sess-subject"></div>
           <div class="stb-detail"  id="sess-detail"></div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
-          <button class="platform-btn" id="platform-btn" onclick="openPlatform()">🔗 <span id="platform-label"></span></button>
-          <div class="stb-timer" id="timer-display">2:00:00</div>
-        </div>
+        <div class="stb-timer" id="timer-display">2:00:00</div>
       </div>
 
       <!-- Messages -->
       <div class="chat-messages" id="chat-messages"></div>
 
-      <!-- File preview strip -->
       <div class="chat-input-wrap">
-        <div class="file-preview-strip" id="file-preview-strip" style="display:none">
-          <img id="file-thumb" src="" alt="" style="display:none" />
-          <span id="file-name-label"></span>
-          <button class="remove-file" onclick="removeFile()">×</button>
-        </div>
         <div class="chat-input-row">
-          <label class="attach-label" for="file-input" title="Upload file">📎</label>
-          <input type="file" id="file-input" accept="image/*,.pdf,.doc,.docx,.txt"
-                 style="display:none" onchange="handleFileSelect(this)" />
           <textarea class="chat-textarea" id="chat-input"
                     placeholder="Ask your tutor anything…"
                     rows="1"
@@ -1370,8 +1361,8 @@ function confirmSigninOpen() {
 
 function chooseUploadFile() {
   removeChoiceCards();
-  appendMessage('ai', `No problem! Tap the **📎** button below to upload your file and I'll help you study it.`);
-  document.getElementById('file-input').click();
+  appendMessage('ai', `No problem! Ask me anything and I'll help you study. 💬`);
+  document.getElementById('chat-input').focus();
 }
 
 function chooseJustChat() {
@@ -1380,15 +1371,10 @@ function chooseJustChat() {
   document.getElementById('chat-input').focus();
 }
 
-function openPlatform() {
-  const url      = PLATFORM_URLS[state.subject];
-  const platform = PLATFORM_LABELS[state.subject] || 'NotebookLM';
-  const hasLink  = url && !url.includes('/xxx') && !url.includes('abc123');
-  if (hasLink) {
-    openSigninModal(platform, url);
-  } else {
-    appendMessage('ai', `⚠️ The **${platform}** link for this subject isn't ready yet. Your teacher will add it soon!`);
-  }
+function goBackFromSession() {
+  clearInterval(state.timerInterval);
+  document.removeEventListener('visibilitychange', handleVisibility);
+  showScreen('screen-subtopic');
 }
 
 function logSession() {
